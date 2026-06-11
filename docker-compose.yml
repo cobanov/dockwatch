@@ -1,0 +1,13 @@
+services:
+  dockwatch:
+    build: .
+    container_name: dockwatch
+    ports:
+      - "9622:9622"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - dockwatch-data:/data
+    restart: unless-stopped
+
+volumes:
+  dockwatch-data:
