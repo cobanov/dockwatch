@@ -133,7 +133,6 @@ export default function App() {
               containers={visibleContainers}
               counts={visibleCounts}
               hosts={visibleHosts}
-              showHostColumn={hosts.length > 1 && selectedHost === "all"}
               error={apiError}
             />
           ) : (
