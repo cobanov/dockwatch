@@ -1,4 +1,4 @@
-import { BellRing, Boxes, PauseIcon, PlayIcon, PlusIcon } from "lucide-react"
+import { BellRing, Boxes, PlusIcon } from "lucide-react"
 import { toast } from "sonner"
 import {
   Sidebar,
@@ -10,11 +10,11 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
 import { setHostDisabled, type HostStatus } from "@/lib/api"
 import type { View } from "@/App"
@@ -146,6 +146,7 @@ export function AppSidebar({
               {hosts.map((h) => (
                 <SidebarMenuItem key={h.alias}>
                   <SidebarMenuButton
+                    className={cn(h.alias !== "local" && "pr-12")}
                     isActive={selectedHost === h.alias}
                     onClick={() => {
                       onSelectHost(selectedHost === h.alias ? "all" : h.alias)
@@ -168,17 +169,13 @@ export function AppSidebar({
                     </span>
                   </SidebarMenuButton>
                   {h.alias !== "local" && (
-                    <SidebarMenuAction
-                      showOnHover={!h.disabled}
-                      title={
-                        h.disabled
-                          ? `Resume monitoring ${h.alias}`
-                          : `Pause monitoring ${h.alias}`
-                      }
-                      onClick={() => handleToggle(h.alias, !h.disabled)}
-                    >
-                      {h.disabled ? <PlayIcon /> : <PauseIcon />}
-                    </SidebarMenuAction>
+                    <div className="absolute right-1.5 top-1/2 -translate-y-1/2">
+                      <Switch
+                        checked={!h.disabled}
+                        onCheckedChange={(enabled) => handleToggle(h.alias, !enabled)}
+                        aria-label={`Toggle monitoring for ${h.alias}`}
+                      />
+                    </div>
                   )}
                 </SidebarMenuItem>
               ))}
