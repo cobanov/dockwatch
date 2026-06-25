@@ -286,7 +286,21 @@ func handleImportSSHConfig(store *ConfigStore, hosts *HostManager) http.HandlerF
 
 func handleTest(notifier *Notifier) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := notifier.Send("Test notification", "dockwatch is connected and working", "default", "tada")
+		// An optional body lets the UI test the current (unsaved) settings; an
+		// empty body falls back to the saved configuration.
+		var body struct {
+			NtfyServer string `json:"ntfyServer"`
+			NtfyTopic  string `json:"ntfyTopic"`
+			NtfyToken  string `json:"ntfyToken"`
+		}
+		_ = json.NewDecoder(r.Body).Decode(&body)
+
+		var err error
+		if strings.TrimSpace(body.NtfyTopic) != "" {
+			err = notifier.SendTestTo(body.NtfyServer, body.NtfyTopic, body.NtfyToken)
+		} else {
+			err = notifier.Send("Test notification", "dockwatch is connected and working", "default", "tada")
+		}
 		if err != nil {
 			writeError(w, http.StatusBadRequest, err.Error())
 			return

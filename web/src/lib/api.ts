@@ -89,8 +89,15 @@ export const fetchHistory = () => request<HistoryPoint[]>("/history")
 export const fetchEvents = () => request<ContainerEvent[]>("/events")
 export const fetchConfig = () => request<Config>("/config")
 export const saveConfig = (cfg: Config) => request<Config>("/config", jsonInit("PUT", cfg))
-export const sendTestNotification = () =>
-  request<{ status: string }>("/test", { method: "POST" })
+export const sendTestNotification = (opts?: {
+  ntfyServer?: string
+  ntfyTopic?: string
+  ntfyToken?: string
+}) =>
+  request<{ status: string }>(
+    "/test",
+    opts ? jsonInit("POST", opts) : { method: "POST" },
+  )
 export const testHost = (h: HostConfig) =>
   request<{ ok: boolean; containers: number }>("/hosts/test", jsonInit("POST", h))
 export const importSSHConfigHosts = () =>

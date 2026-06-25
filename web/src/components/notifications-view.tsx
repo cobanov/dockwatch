@@ -102,7 +102,12 @@ export function NotificationsView() {
   const handleTest = async () => {
     setTesting(true)
     try {
-      await sendTestNotification()
+      // Test the current form values, so settings can be verified before saving.
+      await sendTestNotification({
+        ntfyServer: cfg.ntfyServer.trim(),
+        ntfyTopic: cfg.ntfyTopic.trim(),
+        ntfyToken: cfg.ntfyToken.trim(),
+      })
       toast.success("Test notification sent — check your phone")
     } catch (e) {
       toast.error(e instanceof Error ? e.message : String(e))
@@ -136,7 +141,12 @@ export function NotificationsView() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleTest} disabled={testing}>
+          <Button
+            variant="outline"
+            onClick={handleTest}
+            disabled={testing || !topicSet}
+            title={topicSet ? "Send a test to the topic above" : "Enter a topic first"}
+          >
             {testing ? <Loader2Icon className="animate-spin" /> : <SendIcon />}
             Send test
           </Button>
