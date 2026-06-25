@@ -61,8 +61,9 @@ function Field({
 export function HostDialog({ open, onOpenChange, editing, onSaved }: HostDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* DialogContent mounts fresh on every open, resetting the form state. */}
-      <HostForm editing={editing} onOpenChange={onOpenChange} onSaved={onSaved} />
+      {/* Mount the form only while open so its state re-seeds from `editing`
+          on every open — otherwise the form keeps the first host's values. */}
+      {open && <HostForm editing={editing} onOpenChange={onOpenChange} onSaved={onSaved} />}
     </Dialog>
   )
 }
