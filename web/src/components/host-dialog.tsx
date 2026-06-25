@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { CheckIcon, Loader2Icon, PlugZapIcon, Trash2Icon } from "lucide-react"
+import { CheckIcon, DownloadIcon, Loader2Icon, PlugZapIcon, Trash2Icon } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
   addHost,
+  importSSHConfigHosts,
   removeHost,
   testHost,
   updateHost,
@@ -75,6 +76,7 @@ function HostForm({
   const [testing, setTesting] = useState(false)
   const [saving, setSaving] = useState(false)
   const [removing, setRemoving] = useState(false)
+  const [importing, setImporting] = useState(false)
   const [confirmRemove, setConfirmRemove] = useState(false)
   const [testResult, setTestResult] = useState<{ ok: boolean; text: string } | null>(null)
 
@@ -148,8 +150,28 @@ function HostForm({
     }
   }
 
+  const handleImport = async () => {
+    setImporting(true)
+    try {
+      const res = await importSSHConfigHosts()
+      toast.success(
+        res.added === 0
+          ? "No new SSH hosts found"
+          : `Imported ${res.added} SSH host${res.added === 1 ? "" : "s"}`,
+      )
+      if (res.added > 0) {
+        onOpenChange(false)
+        onSaved(null)
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : String(e))
+    } finally {
+      setImporting(false)
+    }
+  }
+
   const incomplete = !form.host.trim() || !form.user.trim()
-  const busy = saving || removing
+  const busy = saving || removing || importing
 
   return (
     <DialogContent className="sm:max-w-md">
@@ -174,7 +196,7 @@ function HostForm({
             <Field
               id="user"
               label="User"
-              placeholder="cobanov"
+              placeholder="deploy"
               value={form.user}
               onChange={set("user")}
             />
@@ -238,7 +260,14 @@ function HostForm({
               {confirmRemove ? "Confirm remove" : "Remove"}
             </Button>
           ) : (
-            <span />
+            <Button
+              variant="ghost"
+              onClick={handleImport}
+              disabled={busy || testing}
+            >
+              {importing ? <Loader2Icon className="animate-spin" /> : <DownloadIcon />}
+              Import SSH config
+            </Button>
           )}
           <div className="flex gap-2">
             <Button

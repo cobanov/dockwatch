@@ -40,7 +40,7 @@ Notifications fire only on state *transitions* and are rate-limited to one per c
 
 ### Remote hosts
 
-Click **+** next to *Hosts* in the sidebar and enter the machine's address, SSH user and (optionally) port, alias, key path or password. Authentication uses SSH keys / ssh-agent (recommended) or a password — note that passwords are stored in plain text in `config.json`. Your remote user must be able to access `/var/run/docker.sock` (i.e. in the `docker` group).
+Use the **⋯** menu next to *Hosts* in the sidebar to add a machine (its address, SSH user and optionally port, alias, key path or password), import hosts from a previously exported file, or export your hosts to `dockwatch-hosts.json` (passwords are never exported). dockwatch also imports literal hosts from your mounted SSH config (`/ssh/config` by default) on startup when they have `HostName` and `User` entries, and the host dialog has an *Import SSH config* button to pull in newly-added entries. Authentication uses SSH keys / ssh-agent (recommended) or a password — note that passwords are stored in plain text in `config.json`. Your remote user must be able to access `/var/run/docker.sock` (i.e. in the `docker` group).
 
 Hosts are paused/resumed with the toggle next to their name — pausing keeps the host in the config but stops monitoring. To remove one permanently, delete its entry from `config.json` in the data volume.
 
@@ -55,6 +55,7 @@ Keys are read from `~/.ssh`, mounted read-only into the container (see `docker-c
 | `CONFIG_PATH` | `/data/config.json` |
 | `EVENTS_PATH` | `/data/events.json` |
 | `SSH_KEY_DIR` | `/ssh` |
+| `SSH_CONFIG_PATH` | `/ssh/config` |
 | `KNOWN_HOSTS_PATH` | `/data/known_hosts` |
 
 ## How it works
