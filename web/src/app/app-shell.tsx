@@ -34,6 +34,7 @@ import {
   Cog6ToothIcon as Cog6ToothSolid,
 } from "@heroicons/react/24/solid"
 import { setHostDisabled, type Container, type HostConfig } from "@/lib/api"
+import { DEMO } from "@/lib/demo"
 import { useFleet, type HostBlock } from "@/app/lib/use-fleet"
 import { hostStatusDot } from "@/app/lib/host-status"
 import {
@@ -184,6 +185,7 @@ export function AppShell({
       header={
         <SideNavHeading
           heading="dockwatch"
+          superheading={DEMO ? "LIVE DEMO" : undefined}
           subheading="Container monitoring"
           icon={<Icon icon={CubeIcon} />}
         />

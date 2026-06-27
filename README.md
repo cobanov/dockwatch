@@ -10,7 +10,9 @@ A tiny self-hosted watchdog for your Docker containers. It runs as a container i
 
 It can also watch **remote machines over SSH**: add a host from the UI and dockwatch monitors its Docker daemon through an SSH-forwarded socket — nothing to install on the remote side.
 
-Single static Go binary (only dependency: `golang.org/x/crypto` for SSH), ~11 MB image. The web UI is React + [shadcn/ui](https://ui.shadcn.com), embedded into the binary at build time. Works anywhere Docker Desktop or the Docker daemon runs: macOS, Windows (WSL2), Linux.
+Single static Go binary (only dependency: `golang.org/x/crypto` for SSH), ~11 MB image. The web UI is React + the [Astryx](https://astryx.atmeta.com) design system, embedded into the binary at build time. Works anywhere Docker Desktop or the Docker daemon runs: macOS, Windows (WSL2), Linux.
+
+The dashboard groups containers by host (or status / health / image), surfaces live status as colour-coded badges, and has pages for the event log, ntfy notifications, a setup guide, and SSH host management — all in a collapsible sidebar with light/dark themes.
 
 ## Quick start
 
@@ -23,6 +25,23 @@ docker compose up -d --build
 Open **http://localhost:9622**, set an ntfy topic, hit **Save**, then **Send test notification**.
 
 On your phone, install the [ntfy app](https://ntfy.sh/) (iOS/Android) and subscribe to the same topic. That's it — anyone who knows the topic name can read it, so pick something unguessable.
+
+## Live demo
+
+A fully interactive, **backend-free** build of the dashboard ships with realistic in-memory data — click around the grouped table, host filters, detail panel, event log and settings without a Docker daemon. It's a normal static bundle, so it deploys anywhere (Cloudflare Pages, Netlify, GitHub Pages, …):
+
+```bash
+cd web
+npm install
+npm run build:demo        # sets VITE_DEMO=1; emits a static site to web/dist
+```
+
+Deploy `web/dist` as static files. On **Cloudflare Pages** either:
+
+- **Dashboard** — connect this repo, set build command `cd web && npm ci && npm run build:demo` and output directory `web/dist`; or
+- **CLI** — `cd web && npm run build:demo && npx wrangler pages deploy dist --project-name dockwatch-demo`
+
+The demo runs entirely in the browser (a `LIVE DEMO` badge marks it); edits, toggles and saves mutate in-memory state and reset on reload.
 
 ## Configuration
 
@@ -40,7 +59,7 @@ Notifications fire only on state *transitions* and are rate-limited to one per c
 
 ### Remote hosts
 
-Use the **⋯** menu next to *Hosts* in the sidebar to add a machine (its address, SSH user and optionally port, alias, key path or password), import hosts from a previously exported file, or export your hosts to `dockwatch-hosts.json` (passwords are never exported). dockwatch also imports literal hosts from your mounted SSH config (`/ssh/config` by default) on startup when they have `HostName` and `User` entries, and the host dialog has an *Import SSH config* button to pull in newly-added entries. Authentication uses SSH keys / ssh-agent (recommended) or a password — note that passwords are stored in plain text in `config.json`. Your remote user must be able to access `/var/run/docker.sock` (i.e. in the `docker` group).
+Use the **+** next to *Hosts* in the sidebar — or the **Hosts** page (*Manage hosts*) — to add a machine (its address, SSH user and optionally port, alias, key path or password). The Hosts page also imports hosts from a previously exported file and exports your hosts to `dockwatch-hosts.json` (passwords are never exported). dockwatch also imports literal hosts from your mounted SSH config (`/ssh/config` by default) on startup when they have `HostName` and `User` entries, and the host dialog has an *Import SSH config* button to pull in newly-added entries. Authentication uses SSH keys / ssh-agent (recommended) or a password — note that passwords are stored in plain text in `config.json`. Your remote user must be able to access `/var/run/docker.sock` (i.e. in the `docker` group).
 
 Hosts are paused/resumed with the toggle next to their name — pausing keeps the host in the config but stops monitoring. To remove one permanently, delete its entry from `config.json` in the data volume.
 

@@ -1,3 +1,14 @@
+import {
+  DEMO,
+  demoFetchConfig,
+  demoSaveConfig,
+  demoFetchHostContainers,
+  demoFetchEvents,
+  demoTestNotification,
+  demoTestHost,
+  demoImportSSHConfig,
+} from "@/lib/demo"
+
 export interface Container {
   id: string
   name: string
@@ -84,26 +95,37 @@ const jsonInit = (method: string, body: unknown): RequestInit => ({
 
 export const fetchContainers = () => request<ContainersResponse>("/containers")
 export const fetchHostContainers = (alias: string) =>
-  request<HostContainersResponse>(`/containers/${encodeURIComponent(alias)}`)
+  DEMO
+    ? demoFetchHostContainers(alias)
+    : request<HostContainersResponse>(`/containers/${encodeURIComponent(alias)}`)
 export const fetchHistory = () => request<HistoryPoint[]>("/history")
-export const fetchEvents = () => request<ContainerEvent[]>("/events")
-export const fetchConfig = () => request<Config>("/config")
-export const saveConfig = (cfg: Config) => request<Config>("/config", jsonInit("PUT", cfg))
+export const fetchEvents = () =>
+  DEMO ? demoFetchEvents() : request<ContainerEvent[]>("/events")
+export const fetchConfig = () =>
+  DEMO ? demoFetchConfig() : request<Config>("/config")
+export const saveConfig = (cfg: Config) =>
+  DEMO ? demoSaveConfig(cfg) : request<Config>("/config", jsonInit("PUT", cfg))
 export const sendTestNotification = (opts?: {
   ntfyServer?: string
   ntfyTopic?: string
   ntfyToken?: string
 }) =>
-  request<{ status: string }>(
-    "/test",
-    opts ? jsonInit("POST", opts) : { method: "POST" },
-  )
+  DEMO
+    ? demoTestNotification()
+    : request<{ status: string }>(
+        "/test",
+        opts ? jsonInit("POST", opts) : { method: "POST" },
+      )
 export const testHost = (h: HostConfig) =>
-  request<{ ok: boolean; containers: number }>("/hosts/test", jsonInit("POST", h))
+  DEMO
+    ? demoTestHost()
+    : request<{ ok: boolean; containers: number }>("/hosts/test", jsonInit("POST", h))
 export const importSSHConfigHosts = () =>
-  request<{ added: number; hosts: HostConfig[] }>("/hosts/import-ssh-config", {
-    method: "POST",
-  })
+  DEMO
+    ? demoImportSSHConfig()
+    : request<{ added: number; hosts: HostConfig[] }>("/hosts/import-ssh-config", {
+        method: "POST",
+      })
 
 export async function addHost(h: HostConfig): Promise<Config> {
   const cfg = await fetchConfig()
