@@ -1,8 +1,8 @@
 # dockwatch
 
-A tiny self-hosted watchdog for your Docker containers — it watches every container on the machine (and remote ones over SSH) and pings your phone the moment something breaks.
+A tiny self-hosted watchdog for your Docker containers. It watches every container on the machine (and remote ones over SSH) and pings your phone the moment something breaks.
 
-**[▶ Live demo](https://dockwatch-demo.pages.dev)** — the real dashboard with sample data, no install.
+**▶ [Live demo](https://dockwatch-demo.pages.dev)** with realistic sample data, no install needed.
 
 ![dockwatch dashboard](docs/dashboard.png)
 
@@ -18,10 +18,10 @@ Open **http://localhost:9622**, pick an ntfy topic, and subscribe to that topic 
 
 ## What you get
 
-- **Phone alerts** when a container goes unhealthy, crashes, recovers, stops or starts — fired only on real state changes and rate-limited, so you're never spammed.
-- **One dashboard for every host** — group by host, status, health or image, with live colour-coded states, an event log, and light/dark themes.
-- **Remote hosts over SSH** — add a machine from the UI; nothing to install on the other side.
-- **Zero config files** — everything is set in the UI and saved to a Docker volume.
+- **Phone alerts** when a container goes unhealthy, crashes, recovers, stops or starts. They fire only on real state changes and are rate-limited, so you're never spammed.
+- **One dashboard for every host.** Group by host, status, health or image, with live colour-coded states, an event log, and light/dark themes.
+- **Remote hosts over SSH.** Add a machine from the UI; nothing to install on the other side.
+- **Zero config files.** Everything is set in the UI and saved to a Docker volume.
 
 Single static Go binary (~11 MB image), React + [Astryx](https://astryx.atmeta.com) UI embedded in. Runs anywhere Docker does: macOS, Windows (WSL2), Linux.
 
@@ -62,7 +62,7 @@ cd web && npm run dev
 
 ### Static demo build
 
-`cd web && npm run build:demo` emits a backend-free build to `web/dist` (in-memory sample data) that deploys to any static host — Cloudflare Pages, Netlify, GitHub Pages, …
+`cd web && npm run build:demo` emits a backend-free build to `web/dist` (in-memory sample data) that deploys to any static host such as Cloudflare Pages, Netlify or GitHub Pages.
 
 </details>
 
