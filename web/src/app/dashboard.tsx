@@ -604,11 +604,9 @@ export function ContainerDetailPanel({
 
         <Divider />
 
-        <VStack gap={2}>
-          <Text type="label">Image</Text>
-          <CodeBlock code={container.image} size="sm" width="100%" />
-          <Text type="label">Container ID</Text>
-          <CodeBlock code={container.id} size="sm" width="100%" />
+        <VStack gap={3}>
+          <CodeBlock title="Image" code={container.image} size="sm" width="100%" isWrapped />
+          <CodeBlock title="Container ID" code={container.id} size="sm" width="100%" isWrapped />
         </VStack>
       </VStack>
     </LayoutPanel>
