@@ -9,140 +9,223 @@
 <meta property="og:description" content="A tiny self-hosted watchdog for your Docker containers. Get a push on your phone when one dies.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="dashboard.png">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23171717'/%3E%3Cg fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M16 9l6 3.5v7L16 23l-6-3.5v-7z'/%3E%3Cpath d='M10 12.5l6 3.5 6-3.5M16 16v7'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23262626'/%3E%3Cg transform='translate(6 6) scale(0.83)' fill='none' stroke='white' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+// Apply saved/system color mode before paint to avoid a flash. Mirrors the app's
+// dockwatch-theme behaviour (localStorage + prefers-color-scheme).
+(function(){
+  try{
+    var s=localStorage.getItem("dockwatch-site-theme");
+    var dark = s ? s==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    if(dark) document.documentElement.classList.add("dark");
+  }catch(e){}
+})();
+</script>
 <style>
-/* Tokens mirrored from the app's web/src/index.css — keep in sync. */
+/*
+ * Tokens mirrored from the app's Astryx neutralTheme
+ * (node_modules/@astryxdesign/theme-neutral/dist/theme.css) — keep in sync.
+ * The site adopts the app's look: Figtree, a grey body with white surfaces,
+ * Astryx radii, and status colour reserved for ok / warn / alert / idle.
+ */
 :root{
-  --radius:0.625rem;
-  --background:oklch(1 0 0);
-  --foreground:oklch(0.145 0 0);
-  --card:oklch(1 0 0);
-  --primary:oklch(0.205 0 0);
-  --primary-foreground:oklch(0.985 0 0);
-  --secondary:oklch(0.97 0 0);
-  --muted:oklch(0.97 0 0);
-  --muted-foreground:oklch(0.556 0 0);
-  --border:oklch(0.922 0 0);
-  --ok:oklch(0.596 0.145 163.225);
-  --warn:oklch(0.666 0.179 58.318);
-  --alert:oklch(0.577 0.245 27.325);
-  --idle:oklch(0.556 0 0);
-  --sans:"Geist",ui-sans-serif,system-ui,sans-serif;
-  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --radius-page:1.75rem;
+  --radius-container:0.75rem;
+  --radius-element:0.5rem;
+  --radius-inner:0.25rem;
+  --radius-full:9999px;
+
+  --bg-body:#f1f1f1;
+  --bg-surface:#ffffff;
+  --bg-card:#ffffff;
+  --bg-muted:#f1f1f1;
+  --code-bg:#fafafa;
+
+  --accent:#262626;
+  --accent-muted:#f1f1f1;
+  --on-accent:#ffffff;
+
+  --text-primary:#171717;
+  --text-secondary:#737373;
+  --text-disabled:#a3a3a3;
+
+  --border:#ebebeb;
+  --border-emphasized:#d4d4d4;
+
+  --ok:#007004;
+  --alert:#a50c25;
+  --warn:#745b00;
+  --idle:#737373;
+  --ok-muted:#c5e5c0;
+  --alert-muted:#facecb;
+  --warn-muted:#f8da9d;
+
+  --syntax-comment:#737373;
+  --shadow-low:0 1px 1px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.08);
+  --shadow-med:0 1px 2px rgba(0,0,0,.1),0 12px 32px -12px rgba(0,0,0,.18);
+
+  --sans:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+
+  color-scheme:light;
+}
+.dark{
+  --bg-body:#1b1b1b;
+  --bg-surface:#262626;
+  --bg-card:#1b1b1b;
+  --bg-muted:#1b1b1b;
+  --code-bg:#0a0a0a;
+
+  --accent:#ebebeb;
+  --accent-muted:#262626;
+  --on-accent:#171717;
+
+  --text-primary:#fafafa;
+  --text-secondary:#a3a3a3;
+  --text-disabled:#525252;
+
+  --border:rgba(255,255,255,.1);
+  --border-emphasized:#525252;
+
+  --ok:#9fe59b;
+  --alert:#ffc6c1;
+  --warn:#fdcf4f;
+  --idle:#a3a3a3;
+  --ok-muted:rgba(132,201,128,.24);
+  --alert-muted:rgba(255,158,151,.24);
+  --warn-muted:rgba(222,180,51,.24);
+
+  --syntax-comment:#a3a3a3;
+  --shadow-low:0 1px 1px rgba(0,0,0,.2),0 2px 8px rgba(0,0,0,.3);
+  --shadow-med:0 1px 2px rgba(0,0,0,.2),0 12px 32px -12px rgba(0,0,0,.5);
+
+  color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  background:var(--background);color:var(--foreground);
-  font-family:var(--sans);font-size:16px;line-height:1.6;
+  background:var(--bg-body);color:var(--text-primary);
+  font-family:var(--sans);font-size:16px;line-height:1.5;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  transition:background .2s,color .2s;
 }
 a{color:inherit;text-decoration:none}
-.wrap{max-width:72rem;margin:0 auto;padding:0 1.5rem}
+.wrap{max-width:80rem;margin:0 auto;padding:0 1.5rem}
 
 /* header */
-header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,white 85%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg-body) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
 .nav{height:4rem;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:.625rem;font-weight:600;font-size:.9375rem}
-.brand-mark{width:2rem;height:2rem;border-radius:.5rem;background:var(--primary);display:grid;place-items:center;flex:none}
-.brand-mark svg{width:1.125rem;height:1.125rem;stroke:white}
-.brand small{display:block;font-weight:400;font-size:.75rem;color:var(--muted-foreground);line-height:1.2}
-.nav-right{display:flex;align-items:center;gap:1.5rem}
-.nav-links{display:flex;gap:1.5rem;font-size:.875rem;color:var(--muted-foreground)}
-.nav-links a:hover{color:var(--foreground)}
+.brand-mark{width:2rem;height:2rem;border-radius:.5rem;background:var(--accent);display:grid;place-items:center;flex:none}
+.brand-mark svg{width:1.125rem;height:1.125rem;stroke:var(--on-accent)}
+.brand small{display:block;font-weight:400;font-size:.75rem;color:var(--text-secondary);line-height:1.2}
+.nav-right{display:flex;align-items:center;gap:1rem}
+.nav-links{display:flex;gap:1.5rem;font-size:.875rem;color:var(--text-secondary)}
+.nav-links a:hover{color:var(--text-primary)}
 @media(max-width:760px){.nav-links{display:none}}
 
-/* buttons — shadcn default + outline */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;height:2.25rem;padding:0 1rem;border-radius:calc(var(--radius) - 2px);font-size:.875rem;font-weight:500;font-family:var(--sans);cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s;white-space:nowrap}
+/* icon button — Astryx ghost IconButton */
+.icon-btn{width:2.25rem;height:2.25rem;border-radius:var(--radius-element);border:1px solid transparent;background:transparent;color:var(--text-secondary);display:grid;place-items:center;cursor:pointer;transition:background .15s,color .15s}
+.icon-btn:hover{background:var(--accent-muted);color:var(--text-primary)}
+.icon-btn svg{width:1.125rem;height:1.125rem}
+.icon-btn .moon{display:none}
+.dark .icon-btn .sun{display:none}
+.dark .icon-btn .moon{display:block}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;height:2.25rem;padding:0 1rem;border-radius:var(--radius-element);font-size:.875rem;font-weight:500;font-family:var(--sans);cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s,opacity .15s;white-space:nowrap}
 .btn svg{width:1rem;height:1rem;flex:none}
-.btn-primary{background:var(--primary);color:var(--primary-foreground)}
-.btn-primary:hover{background:oklch(0.205 0 0 / .9)}
-.btn-outline{background:var(--background);border-color:var(--border)}
-.btn-outline:hover{background:var(--secondary)}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-primary:hover{opacity:.9}
+.btn-outline{background:var(--bg-surface);border-color:var(--border-emphasized);color:var(--text-primary)}
+.btn-outline:hover{background:var(--accent-muted)}
 .btn-lg{height:2.5rem;padding:0 1.25rem}
 
 /* hero */
 .hero{padding:5.5rem 0 3.5rem;text-align:center}
-.pill{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--border);border-radius:9999px;padding:.25rem .75rem;font-size:.75rem;font-weight:500;color:var(--muted-foreground);margin-bottom:1.5rem}
+.pill{display:inline-flex;align-items:center;gap:.5rem;background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-full);padding:.3125rem .75rem;font-size:.75rem;font-weight:500;color:var(--text-secondary);margin-bottom:1.5rem;box-shadow:var(--shadow-low)}
 .dot{width:.5rem;height:.5rem;border-radius:50%;flex:none}
 .dot-ok{background:var(--ok)}
 .dot-alert{background:var(--alert)}
 .dot-warn{background:var(--warn)}
 .dot-idle{background:var(--idle)}
 h1{font-size:clamp(2.25rem,5vw,3.5rem);font-weight:600;letter-spacing:-0.025em;line-height:1.08;max-width:46rem;margin:0 auto 1.25rem}
-.lede{font-size:1.0625rem;color:var(--muted-foreground);max-width:38rem;margin:0 auto 2rem}
-.lede b{color:var(--foreground);font-weight:500}
+.lede{font-size:1.0625rem;color:var(--text-secondary);max-width:38rem;margin:0 auto 2rem}
+.lede b{color:var(--text-primary);font-weight:500}
 .hero-actions{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap}
-.hero-hint{margin-top:1.25rem;font-family:var(--mono);font-size:.8125rem;color:var(--muted-foreground)}
+.hero-hint{margin-top:1.25rem;font-family:var(--mono);font-size:.8125rem;color:var(--text-secondary)}
 
 /* screenshot */
-.shot{padding:1.5rem 0 0}
-.shot-frame{border:1px solid var(--border);border-radius:calc(var(--radius) + 4px);overflow:hidden;box-shadow:0 1px 2px rgb(0 0 0 / .04),0 12px 32px -12px rgb(0 0 0 / .12)}
+.shot{padding:2.5rem 0 0}
+.shot-frame{border:1px solid var(--border-emphasized);border-radius:var(--radius-container);overflow:hidden;box-shadow:var(--shadow-med);background:var(--bg-surface)}
 .shot-frame img{display:block;width:100%;height:auto}
 
 /* sections */
 section{padding:5rem 0}
 .sec-head{max-width:36rem;margin-bottom:2.5rem}
 h2{font-size:1.875rem;font-weight:600;letter-spacing:-0.025em;line-height:1.2;margin-bottom:.5rem}
-.sec-head p{color:var(--muted-foreground)}
+.sec-head p{color:var(--text-secondary)}
 
 /* feature grid */
 .features{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
 @media(max-width:900px){.features{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.features{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 1px 2px rgb(0 0 0 / .04)}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-container);box-shadow:var(--shadow-low)}
 .feature{padding:1.5rem}
-.feature-icon{width:2.25rem;height:2.25rem;border-radius:calc(var(--radius) - 2px);background:var(--muted);display:grid;place-items:center;margin-bottom:1rem}
-.feature-icon svg{width:1.125rem;height:1.125rem;stroke:var(--foreground)}
+.feature-icon{width:2.25rem;height:2.25rem;border-radius:var(--radius-element);background:var(--accent-muted);display:grid;place-items:center;margin-bottom:1rem}
+.feature-icon svg{width:1.125rem;height:1.125rem;stroke:var(--text-primary)}
 .feature h3{font-size:.9375rem;font-weight:600;margin-bottom:.25rem}
-.feature p{font-size:.875rem;color:var(--muted-foreground)}
+.feature p{font-size:.875rem;color:var(--text-secondary)}
 .feature p code{font-family:var(--mono);font-size:.8125em}
 
 /* alert rules showcase */
 .rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
 @media(max-width:860px){.rules-grid{grid-template-columns:1fr;gap:2.5rem}}
-.rules-copy p{color:var(--muted-foreground);margin-bottom:1.25rem}
-.rules-copy p b{color:var(--foreground);font-weight:500}
+.rules-copy p{color:var(--text-secondary);margin-bottom:1.25rem}
+.rules-copy p b{color:var(--text-primary);font-weight:500}
 .rules-list{list-style:none;display:grid;gap:.625rem;font-size:.875rem}
 .rules-list li{display:flex;align-items:center;gap:.625rem}
 .card-header{padding:1.25rem 1.5rem 0}
 .card-title{font-size:1rem;font-weight:600}
-.card-desc{font-size:.875rem;color:var(--muted-foreground)}
+.card-desc{font-size:.875rem;color:var(--text-secondary);margin-top:.125rem}
 .card-content{padding:1rem 1.5rem 1.5rem}
 .rule{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding:.75rem 0}
 .rule + .rule{border-top:1px solid var(--border)}
 .rule-label{font-size:.875rem;font-weight:500;line-height:1.3}
-.rule-desc{font-size:.8125rem;color:var(--muted-foreground)}
+.rule-desc{font-size:.8125rem;color:var(--text-secondary)}
 .rule-right{display:flex;align-items:center;gap:.75rem;flex:none}
-.badge{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:.5rem;padding:.125rem .5rem;font-size:.75rem;font-weight:500;color:var(--muted-foreground)}
+.badge{display:inline-flex;align-items:center;border-radius:var(--radius-inner);padding:.125rem .5rem;font-size:.75rem;font-weight:500;border:1px solid transparent}
+.badge-alert{background:var(--alert-muted);color:var(--alert)}
+.badge-warn{background:var(--warn-muted);color:var(--warn)}
+.badge-default{background:var(--accent-muted);color:var(--text-secondary);border-color:var(--border)}
 @media(max-width:480px){.badge{display:none}}
-.switch{width:2rem;height:1.15rem;border-radius:9999px;background:var(--primary);position:relative;flex:none}
-.switch::after{content:"";position:absolute;top:2px;left:calc(100% - 1.05rem + 2px);width:.85rem;height:.85rem;border-radius:50%;background:white}
+.switch{width:2rem;height:1.15rem;border-radius:var(--radius-full);background:var(--accent);position:relative;flex:none}
+.switch::after{content:"";position:absolute;top:2px;left:calc(100% - 1.05rem + 2px);width:.85rem;height:.85rem;border-radius:50%;background:var(--on-accent)}
 
 /* quickstart */
 .steps{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
 @media(max-width:860px){.steps{grid-template-columns:1fr;gap:2.5rem}}
 .step-list{list-style:none;display:grid;gap:1.5rem}
 .step{display:flex;gap:1rem}
-.step-num{width:1.75rem;height:1.75rem;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;font-size:.8125rem;font-weight:500;flex:none;font-family:var(--mono)}
+.step-num{width:1.75rem;height:1.75rem;border-radius:50%;border:1px solid var(--border-emphasized);display:grid;place-items:center;font-size:.8125rem;font-weight:500;flex:none;font-family:var(--mono)}
 .step h3{font-size:.9375rem;font-weight:600;margin-bottom:.125rem}
-.step p{font-size:.875rem;color:var(--muted-foreground)}
-.step p code{font-family:var(--mono);font-size:.8125em;background:var(--muted);border:1px solid var(--border);border-radius:.25rem;padding:.0625rem .25rem}
-.codeblock{position:relative;background:oklch(0.205 0 0);border-radius:var(--radius);overflow:auto}
-.codeblock pre{padding:1.25rem 1.5rem;font-family:var(--mono);font-size:.8125rem;line-height:1.9;color:oklch(0.985 0 0)}
-.codeblock .c{color:oklch(0.65 0 0)}
-.copy{position:absolute;top:.625rem;right:.625rem;height:1.75rem;padding:0 .625rem;border-radius:.375rem;border:1px solid oklch(0.35 0 0);background:transparent;color:oklch(0.8 0 0);font-family:var(--sans);font-size:.75rem;cursor:pointer;transition:background .15s}
-.copy:hover{background:oklch(0.27 0 0)}
+.step p{font-size:.875rem;color:var(--text-secondary)}
+.step p code{font-family:var(--mono);font-size:.8125em;background:var(--accent-muted);border:1px solid var(--border);border-radius:var(--radius-inner);padding:.0625rem .25rem}
+.codeblock{position:relative;background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius-container);overflow:auto}
+.codeblock pre{padding:1.25rem 1.5rem;font-family:var(--mono);font-size:.8125rem;line-height:1.9;color:var(--text-primary)}
+.codeblock .c{color:var(--syntax-comment)}
+.copy{position:absolute;top:.625rem;right:.625rem;height:1.75rem;padding:0 .625rem;border-radius:var(--radius-inner);border:1px solid var(--border-emphasized);background:var(--bg-surface);color:var(--text-secondary);font-family:var(--sans);font-size:.75rem;cursor:pointer;transition:background .15s}
+.copy:hover{background:var(--accent-muted)}
 .copy.done{color:var(--ok)}
 
 /* footer */
-footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;color:var(--muted-foreground)}
+footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;color:var(--text-secondary)}
 .foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
 .foot-links{display:flex;gap:1.5rem}
-.foot a:hover{color:var(--foreground)}
+.foot a:hover{color:var(--text-primary)}
 </style>
 </head>
 <body>
@@ -151,7 +234,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
   <div class="wrap nav">
     <a class="brand" href="#">
       <span class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
       </span>
       <span>dockwatch<small>Container monitoring</small></span>
     </a>
@@ -161,6 +244,10 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
         <a href="#rules">Notifications</a>
         <a href="#quickstart">Quick start</a>
       </nav>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle color mode" title="Toggle color mode">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21.752 15.002A9.72 9.72 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+      </button>
       <a class="btn btn-outline" href="https://github.com/cobanov/dockwatch">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.14c0 .3.21.66.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
         GitHub
@@ -185,7 +272,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
   </div>
   <div class="wrap shot">
     <div class="shot-frame">
-      <img src="dashboard.png" alt="The dockwatch dashboard: 38 containers across 4 hosts, with per-host tables showing image, status and uptime" width="2000" height="1384" loading="eager">
+      <img src="dashboard.png" alt="The dockwatch dashboard: 38 containers across 4 hosts, with per-host tables showing image, status and uptime" width="2560" height="1772" loading="eager">
     </div>
   </div>
 </div>
@@ -214,7 +301,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
         <p>Add a host from the UI and dockwatch watches its Docker daemon through an SSH-forwarded socket. Nothing to install on the remote side.</p>
       </div>
       <div class="card feature">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg></div>
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg></div>
         <h3>Tiny footprint</h3>
         <p>A single static Go binary in a ~11 MB image, web UI embedded. The Docker Engine API is called with the standard library — the only dependency is <code>golang.org/x/crypto</code>.</p>
       </div>
@@ -254,23 +341,23 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
       <div class="card-content">
         <div class="rule">
           <div><div class="rule-label">Unhealthy containers</div><div class="rule-desc">A container's healthcheck starts failing</div></div>
-          <div class="rule-right"><span class="badge">Urgent</span><span class="switch"></span></div>
+          <div class="rule-right"><span class="badge badge-alert">Urgent</span><span class="switch"></span></div>
         </div>
         <div class="rule">
           <div><div class="rule-label">Crashed containers</div><div class="rule-desc">Died with a non-zero exit code</div></div>
-          <div class="rule-right"><span class="badge">High</span><span class="switch"></span></div>
+          <div class="rule-right"><span class="badge badge-warn">High</span><span class="switch"></span></div>
         </div>
         <div class="rule">
           <div><div class="rule-label">Recoveries</div><div class="rule-desc">Back to healthy, or back up after a crash</div></div>
-          <div class="rule-right"><span class="badge">Default</span><span class="switch"></span></div>
+          <div class="rule-right"><span class="badge badge-default">Default</span><span class="switch"></span></div>
         </div>
         <div class="rule">
           <div><div class="rule-label">Stopped containers</div><div class="rule-desc">Clean exits and manual stops</div></div>
-          <div class="rule-right"><span class="badge">Default</span><span class="switch"></span></div>
+          <div class="rule-right"><span class="badge badge-default">Default</span><span class="switch"></span></div>
         </div>
         <div class="rule">
           <div><div class="rule-label">Started containers</div><div class="rule-desc">A container starts, including restarts</div></div>
-          <div class="rule-right"><span class="badge">Default</span><span class="switch"></span></div>
+          <div class="rule-right"><span class="badge badge-default">Default</span><span class="switch"></span></div>
         </div>
       </div>
     </div>
@@ -340,6 +427,12 @@ open http://localhost:9622</pre>
 </footer>
 
 <script>
+// color mode toggle
+document.getElementById('theme-toggle').addEventListener('click',function(){
+  var dark=document.documentElement.classList.toggle('dark');
+  try{localStorage.setItem('dockwatch-site-theme',dark?'dark':'light');}catch(e){}
+});
+// copy buttons
 document.querySelectorAll('.copy').forEach(function(btn){
   btn.addEventListener('click',function(){
     navigator.clipboard.writeText(btn.getAttribute('data-copy')).then(function(){
