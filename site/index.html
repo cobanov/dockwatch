@@ -276,7 +276,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
       </a>
       <a class="btn btn-outline btn-lg" href="#quickstart">Get started</a>
     </div>
-    <p class="hero-hint">$ docker compose up -d --build</p>
+    <p class="hero-hint">$ git clone https://github.com/cobanov/dockwatch &amp;&amp; cd dockwatch &amp;&amp; docker compose up -d --build</p>
   </div>
   <div class="wrap shot">
     <div class="shot-frame">
@@ -300,6 +300,11 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
         <p>Crashes, failing healthchecks and recoveries land on your phone in seconds — through public ntfy.sh or your own ntfy server, with token auth supported.</p>
       </div>
       <div class="card feature">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25a2.25 2.25 0 0 1 2.25 2.25v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25zM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25z"/></svg></div>
+        <h3>Your whole fleet, grouped</h3>
+        <p>Group by host, status, health or image, filter as you type, and click any container for its full details. States are colour-coded and update live, and every start, stop and crash is kept in the event log.</p>
+      </div>
+      <div class="card feature">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
         <h3>Knows a crash from a stop</h3>
         <p>Exit codes and healthcheck transitions are tracked per container. A manual <code>docker stop</code> is never mistaken for a crash.</p>
@@ -307,22 +312,17 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
       <div class="card feature">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg></div>
         <h3>Remote hosts over SSH</h3>
-        <p>Add a host from the UI and dockwatch watches its Docker daemon through an SSH-forwarded socket. Nothing to install on the remote side.</p>
-      </div>
-      <div class="card feature">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg></div>
-        <h3>Tiny footprint</h3>
-        <p>A single static Go binary in a ~11 MB image, web UI embedded. The Docker Engine API is called with the standard library — the only dependency is <code>golang.org/x/crypto</code>.</p>
+        <p>Add a host from the UI over SSH keys or ssh-agent — nothing to install on the other side. Import and export hosts as JSON, and dockwatch picks up your <code>~/.ssh/config</code> too.</p>
       </div>
       <div class="card feature">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><path d="m1 1 22 22"/></svg></div>
         <h3>Quiet by design</h3>
-        <p>Notifications fire on state transitions only, rate-limited per container and per type — a crash loop won't flood your phone. Ignore patterns mute the rest.</p>
+        <p>Notifications fire on state transitions only, rate-limited per container and per type — a crash loop won't flood your phone. An ignore list mutes the rest.</p>
       </div>
       <div class="card feature">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h12a2 2 0 0 0 2-2v-2H10v2a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v3h4"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M15 8h-5M15 12h-5"/></svg></div>
-        <h3>Full timeline</h3>
-        <p>Every start, stop, crash and recovery is kept in the event log, and the dashboard shows your whole fleet at a glance — live.</p>
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg></div>
+        <h3>Tiny and config-free</h3>
+        <p>A single ~11 MB static Go binary with the UI embedded. No config files to edit — everything's set in the UI and saved to a Docker volume, with light and dark themes.</p>
       </div>
     </div>
   </div>
