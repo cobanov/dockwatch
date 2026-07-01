@@ -1,8 +1,8 @@
 # watchdock
 
-A tiny self-hosted watchdog for your Docker containers. It watches every container on the machine (and remote ones over SSH) and pings your phone the moment something breaks.
+A tiny self-hosted watchdog for your Docker containers — it watches every container on the machine (and remote ones over SSH) and pushes an alert to your phone the moment something breaks.
 
-**▶ [Live demo](https://watchdock-demo.pages.dev)** with realistic sample data, no install needed.
+**[▶ Live demo](https://watchdock-demo.pages.dev)** · **[Website](https://watchdock.cobanov.dev)**
 
 ![watchdock dashboard](docs/dashboard.png)
 
@@ -14,19 +14,21 @@ cd watchdock
 docker compose up -d --build
 ```
 
-Open **http://localhost:9622**, pick an ntfy topic, and subscribe to that topic in the [ntfy app](https://ntfy.sh/) on your phone. That's it.
+Open **http://localhost:9622**, set an ntfy topic, and subscribe to it in the [ntfy app](https://ntfy.sh/) on your phone. That's it.
 
-## What you get
+> Prefer a prebuilt image? Multi-arch images are published at `ghcr.io/cobanov/watchdock`.
 
-- **Phone alerts** when a container goes unhealthy, crashes, recovers, stops or starts. They fire only on real state changes and are rate-limited, so you're never spammed.
-- **One dashboard for every host.** Group by host, status, health or image, with live colour-coded states, an event log, and light/dark themes.
-- **Remote hosts over SSH.** Add a machine from the UI; nothing to install on the other side.
-- **Zero config files.** Everything is set in the UI and saved to a Docker volume.
+## Features
 
-Single static Go binary (~11 MB image), React + [Astryx](https://astryx.atmeta.com) UI embedded in. Runs anywhere Docker does: macOS, Windows (WSL2), Linux.
+- **Phone alerts** on real state changes — unhealthy, crash, recovery, stop, start — rate-limited so you're never spammed.
+- **One dashboard for every host** — group by host, status, health or image, with live colour-coded states, an event log, and light/dark themes.
+- **Remote hosts over SSH** — add a machine from the UI; nothing to install on the other side.
+- **Tiny and config-free** — a single ~11 MB static Go binary with the UI embedded; everything's set in the UI and saved to a Docker volume.
+
+Runs anywhere Docker does: macOS, Windows (WSL2), Linux.
 
 <details>
-<summary><b>Remote hosts, environment variables & development</b></summary>
+<summary><b>Configuration, remote hosts &amp; development</b></summary>
 
 ### Remote hosts
 
