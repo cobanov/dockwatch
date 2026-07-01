@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>dockwatch — container monitoring with push notifications</title>
+<title>watchdock — container monitoring with push notifications</title>
 <meta name="description" content="A tiny self-hosted watchdog for your Docker containers. One ~11 MB container watches your whole fleet — local or over SSH — and pushes a notification to your phone via ntfy when something breaks.">
-<meta property="og:title" content="dockwatch">
+<meta property="og:title" content="watchdock">
 <meta property="og:description" content="A tiny self-hosted watchdog for your Docker containers. Get a push on your phone when one dies.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="dashboard.png">
@@ -15,10 +15,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script>
 // Apply saved/system color mode before paint to avoid a flash. Mirrors the app's
-// dockwatch-theme behaviour (localStorage + prefers-color-scheme).
+// watchdock-theme behaviour (localStorage + prefers-color-scheme).
 (function(){
   try{
-    var s=localStorage.getItem("dockwatch-site-theme");
+    var s=localStorage.getItem("watchdock-site-theme");
     var dark = s ? s==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
     if(dark) document.documentElement.classList.add("dark");
   }catch(e){}
@@ -240,20 +240,20 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
       <span class="brand-mark">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"/></svg>
       </span>
-      <span>dockwatch<small>Container monitoring</small></span>
+      <span>watchdock<small>Container monitoring</small></span>
     </a>
     <div class="nav-right">
       <nav class="nav-links">
         <a href="#features">Features</a>
         <a href="#rules">Notifications</a>
         <a href="#quickstart">Quick start</a>
-        <a href="https://dockwatch-demo.pages.dev" target="_blank" rel="noopener">Demo</a>
+        <a href="https://watchdock-demo.pages.dev" target="_blank" rel="noopener">Demo</a>
       </nav>
       <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle color mode" title="Toggle color mode">
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21.752 15.002A9.72 9.72 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
       </button>
-      <a class="btn btn-outline" href="https://github.com/cobanov/dockwatch">
+      <a class="btn btn-outline" href="https://github.com/cobanov/watchdock">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.14c0 .3.21.66.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
         GitHub
       </a>
@@ -268,20 +268,20 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
   <div class="wrap">
     <span class="pill"><span class="dot dot-ok"></span>Open source · Self-hosted · MIT</span>
     <h1>A tiny watchdog for your Docker containers.</h1>
-    <p class="lede">dockwatch runs as a single <b>~11 MB container</b>, watches every other container on your machines — <b>local or remote over SSH</b> — and pushes a notification to your phone via <a href="https://ntfy.sh" style="text-decoration:underline;text-underline-offset:3px">ntfy</a> when one crashes, goes unhealthy, or recovers.</p>
+    <p class="lede">watchdock runs as a single <b>~11 MB container</b>, watches every other container on your machines — <b>local or remote over SSH</b> — and pushes a notification to your phone via <a href="https://ntfy.sh" style="text-decoration:underline;text-underline-offset:3px">ntfy</a> when one crashes, goes unhealthy, or recovers.</p>
     <div class="hero-actions">
-      <a class="btn btn-primary btn-lg" href="https://dockwatch-demo.pages.dev" target="_blank" rel="noopener">
+      <a class="btn btn-primary btn-lg" href="https://watchdock-demo.pages.dev" target="_blank" rel="noopener">
         Try the live demo
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
       </a>
       <a class="btn btn-outline btn-lg" href="#quickstart">Get started</a>
     </div>
-    <p class="hero-hint">$ git clone https://github.com/cobanov/dockwatch &amp;&amp; cd dockwatch &amp;&amp; docker compose up -d --build</p>
+    <p class="hero-hint">$ git clone https://github.com/cobanov/watchdock &amp;&amp; cd watchdock &amp;&amp; docker compose up -d --build</p>
   </div>
   <div class="wrap shot">
     <div class="shot-frame">
-      <img class="shot-light" src="dashboard.png" alt="The dockwatch dashboard: containers across hosts, with per-host tables showing image, status and uptime" width="2560" height="1772" loading="eager">
-      <img class="shot-dark" src="dashboard-dark.png" alt="The dockwatch dashboard in dark mode: containers across hosts, with per-host tables showing image, status and uptime" width="2560" height="1772" loading="eager">
+      <img class="shot-light" src="dashboard.png" alt="The watchdock dashboard: containers across hosts, with per-host tables showing image, status and uptime" width="2560" height="1772" loading="eager">
+      <img class="shot-dark" src="dashboard-dark.png" alt="The watchdock dashboard in dark mode: containers across hosts, with per-host tables showing image, status and uptime" width="2560" height="1772" loading="eager">
     </div>
   </div>
 </div>
@@ -291,7 +291,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
   <div class="wrap">
     <div class="sec-head">
       <h2>Everything you need, nothing to babysit</h2>
-      <p>Point it at a Docker socket and forget about it. dockwatch keeps a live state map of your fleet and turns transitions into notifications.</p>
+      <p>Point it at a Docker socket and forget about it. watchdock keeps a live state map of your fleet and turns transitions into notifications.</p>
     </div>
     <div class="features">
       <div class="card feature">
@@ -312,7 +312,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
       <div class="card feature">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/></svg></div>
         <h3>Remote hosts over SSH</h3>
-        <p>Add a host from the UI over SSH keys or ssh-agent — nothing to install on the other side. Import and export hosts as JSON, and dockwatch picks up your <code>~/.ssh/config</code> too.</p>
+        <p>Add a host from the UI over SSH keys or ssh-agent — nothing to install on the other side. Import and export hosts as JSON, and watchdock picks up your <code>~/.ssh/config</code> too.</p>
       </div>
       <div class="card feature">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M18 8a6 6 0 0 0-9.33-5"/><path d="m1 1 22 22"/></svg></div>
@@ -405,12 +405,12 @@ footer{border-top:1px solid var(--border);padding:2rem 0 3rem;font-size:.875rem;
         </li>
       </ol>
       <div class="codeblock">
-        <button class="copy" data-copy="git clone https://github.com/cobanov/dockwatch.git
-cd dockwatch
+        <button class="copy" data-copy="git clone https://github.com/cobanov/watchdock.git
+cd watchdock
 docker compose up -d --build">Copy</button>
         <pre><span class="c"># grab it</span>
-git clone https://github.com/cobanov/dockwatch.git
-cd dockwatch
+git clone https://github.com/cobanov/watchdock.git
+cd watchdock
 
 <span class="c"># run it</span>
 docker compose up -d --build
@@ -428,8 +428,8 @@ open http://localhost:9622</pre>
   <div class="wrap foot">
     <div>MIT © 2026 Mert Cobanov</div>
     <div class="foot-links">
-      <a href="https://github.com/cobanov/dockwatch">GitHub</a>
-      <a href="https://github.com/cobanov/dockwatch#configuration">Docs</a>
+      <a href="https://github.com/cobanov/watchdock">GitHub</a>
+      <a href="https://github.com/cobanov/watchdock#configuration">Docs</a>
       <a href="https://ntfy.sh">ntfy.sh</a>
     </div>
   </div>
@@ -439,7 +439,7 @@ open http://localhost:9622</pre>
 // color mode toggle
 document.getElementById('theme-toggle').addEventListener('click',function(){
   var dark=document.documentElement.classList.toggle('dark');
-  try{localStorage.setItem('dockwatch-site-theme',dark?'dark':'light');}catch(e){}
+  try{localStorage.setItem('watchdock-site-theme',dark?'dark':'light');}catch(e){}
 });
 // copy buttons
 document.querySelectorAll('.copy').forEach(function(btn){

@@ -184,7 +184,7 @@ export function AppShell({
       collapsible
       header={
         <SideNavHeading
-          heading="dockwatch"
+          heading="watchdock"
           superheading={DEMO ? "LIVE DEMO" : undefined}
           subheading="Container monitoring"
           icon={<Icon icon={CubeIcon} />}

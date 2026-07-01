@@ -2,7 +2,7 @@ import { useCallback, useState } from "react"
 
 export type ColorMode = "light" | "dark"
 
-const STORAGE_KEY = "dockwatch-theme"
+const STORAGE_KEY = "watchdock-theme"
 
 function initialMode(): ColorMode {
   const saved = localStorage.getItem(STORAGE_KEY)

@@ -1,4 +1,4 @@
-module dockwatch
+module watchdock
 
 go 1.25.0
 

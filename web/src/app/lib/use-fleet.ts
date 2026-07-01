@@ -28,13 +28,13 @@ export interface Fleet {
   allContainers: Container[]
   // Configured remote hosts (full config, for the sidebar + Hosts page).
   hosts: HostConfig[]
-  // False when the dockwatch daemon /config endpoint is unreachable.
+  // False when the watchdock daemon /config endpoint is unreachable.
   apiOnline: boolean
   configError: string | null
   refresh: () => void
 }
 
-// Polls the dockwatch daemon for every configured host on an interval, patching
+// Polls the watchdock daemon for every configured host on an interval, patching
 // each host's block in place so fast hosts render without waiting for slow ones.
 // Lifted from the original App.tsx data layer.
 export function useFleet(): Fleet {

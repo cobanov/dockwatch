@@ -48,7 +48,7 @@ const c = (
 // states so every status colour and the detail panel are visible at a glance.
 const containers: Record<string, Container[]> = {
   local: [
-    c("local", "dockwatch", "ghcr.io/cobanov/dockwatch:latest", "running", "healthy", "Up 6 days (healthy)"),
+    c("local", "watchdock", "ghcr.io/cobanov/watchdock:latest", "running", "healthy", "Up 6 days (healthy)"),
     c("local", "traefik", "traefik:v3", "running", "healthy", "Up 6 days (healthy)"),
     c("local", "portainer", "portainer/portainer-ce:latest", "running", "none", "Up 6 days"),
     c("local", "grafana", "grafana/grafana:latest", "running", "healthy", "Up 6 days (healthy)"),
@@ -78,7 +78,7 @@ const containers: Record<string, Container[]> = {
 // `ci` is configured but unreachable — shows the offline-host state.
 const config: Config = {
   ntfyServer: "https://ntfy.sh",
-  ntfyTopic: "dockwatch-demo",
+  ntfyTopic: "watchdock-demo",
   ntfyToken: "",
   notifyUnhealthy: true,
   notifyDown: true,

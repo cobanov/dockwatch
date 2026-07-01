@@ -202,7 +202,7 @@ export async function exportHosts(): Promise<number> {
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
   a.href = url
-  a.download = "dockwatch-hosts.json"
+  a.download = "watchdock-hosts.json"
   a.click()
   URL.revokeObjectURL(url)
   return cfg.hosts.length

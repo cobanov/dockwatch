@@ -35,7 +35,7 @@ type HostConfig struct {
 func defaultConfig() Config {
 	return Config{
 		NtfyServer:      "https://ntfy.sh",
-		NtfyTopic:       "dockwatch",
+		NtfyTopic:       "watchdock",
 		NotifyUnhealthy: true,
 		NotifyDown:      true,
 		NotifyRecovered: true,

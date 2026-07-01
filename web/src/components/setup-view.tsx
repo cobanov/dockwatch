@@ -60,23 +60,23 @@ export function SetupView({ onNavigate }: { onNavigate: (view: View) => void }) 
       <div className="space-y-1">
         <h2 className="text-2xl font-semibold tracking-tight">Setup guide</h2>
         <p className="text-sm text-muted-foreground">
-          Get dockwatch running and receive container alerts on your phone in a
+          Get watchdock running and receive container alerts on your phone in a
           few minutes.
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <StepTitle step={1}>Run dockwatch</StepTitle>
+          <StepTitle step={1}>Run watchdock</StepTitle>
           <CardDescription>
-            dockwatch runs as a container and watches every other container on
+            watchdock runs as a container and watches every other container on
             the machine through the Docker socket.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <CodeBlock
-            code={`git clone https://github.com/cobanov/dockwatch.git
-cd dockwatch
+            code={`git clone https://github.com/cobanov/watchdock.git
+cd watchdock
 docker compose up -d --build`}
           />
           <p className="text-sm text-muted-foreground">
@@ -100,11 +100,11 @@ docker compose up -d --build`}
           <p className="text-sm text-muted-foreground">
             Install the app on your phone, then subscribe to a topic. The
             default topic is{" "}
-            <code className="font-mono text-xs">dockwatch</code> — fine for a
+            <code className="font-mono text-xs">watchdock</code> — fine for a
             quick test or a self-hosted server, but on the public ntfy.sh
             anyone who knows the topic can read it, so pick something
             unguessable like{" "}
-            <code className="font-mono text-xs">dockwatch-x7q2-mertc</code>.
+            <code className="font-mono text-xs">watchdock-x7q2-mertc</code>.
           </p>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" asChild>
@@ -142,9 +142,9 @@ docker compose up -d --build`}
 
       <Card>
         <CardHeader>
-          <StepTitle step={3}>Connect dockwatch to ntfy</StepTitle>
+          <StepTitle step={3}>Connect watchdock to ntfy</StepTitle>
           <CardDescription>
-            Point dockwatch at the same topic your phone subscribes to.
+            Point watchdock at the same topic your phone subscribes to.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

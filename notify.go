@@ -30,7 +30,7 @@ func (n *Notifier) Send(title, message, priority, tags string) error {
 // SendTestTo sends the canned test message to an explicit target, letting the
 // UI verify settings before they are saved.
 func (n *Notifier) SendTestTo(server, topic, token string) error {
-	return n.send(server, topic, token, "Test notification", "dockwatch is connected and working", "default", "tada")
+	return n.send(server, topic, token, "Test notification", "watchdock is connected and working", "default", "tada")
 }
 
 func (n *Notifier) send(server, topic, token, title, message, priority, tags string) error {

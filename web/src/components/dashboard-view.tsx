@@ -43,7 +43,7 @@ import {
 } from "@/lib/api"
 import type { HostBlock } from "@/App"
 
-const COLLAPSE_STORAGE_KEY = "dockwatch-collapsed-hosts"
+const COLLAPSE_STORAGE_KEY = "watchdock-collapsed-hosts"
 
 interface DashboardViewProps {
   blocks: HostBlock[]

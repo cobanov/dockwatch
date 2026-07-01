@@ -11,10 +11,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY *.go ./
 COPY --from=ui /ui/dist ./web/dist
-RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /dockwatch .
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /watchdock .
 
 FROM scratch
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=build /dockwatch /dockwatch
+COPY --from=build /watchdock /watchdock
 EXPOSE 9622
-ENTRYPOINT ["/dockwatch"]
+ENTRYPOINT ["/watchdock"]

@@ -88,7 +88,7 @@ func main() {
 		srv.Shutdown(shutdownCtx)
 	}()
 
-	log.Printf("dockwatch listening on http://localhost:%s", port)
+	log.Printf("watchdock listening on http://localhost:%s", port)
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		log.Fatal(err)
 	}
@@ -299,7 +299,7 @@ func handleTest(notifier *Notifier) http.HandlerFunc {
 		if strings.TrimSpace(body.NtfyTopic) != "" {
 			err = notifier.SendTestTo(body.NtfyServer, body.NtfyTopic, body.NtfyToken)
 		} else {
-			err = notifier.Send("Test notification", "dockwatch is connected and working", "default", "tada")
+			err = notifier.Send("Test notification", "watchdock is connected and working", "default", "tada")
 		}
 		if err != nil {
 			writeError(w, http.StatusBadRequest, err.Error())

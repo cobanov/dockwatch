@@ -51,19 +51,19 @@ export function SetupPage({ onOpenNotifications }: { onOpenNotifications: () => 
         <VStack gap={0}>
           <Heading level={1}>Setup Guide</Heading>
           <Text type="supporting" color="secondary">
-            Get dockwatch running and receive container alerts on your phone in a few
+            Get watchdock running and receive container alerts on your phone in a few
             minutes.
           </Text>
         </VStack>
 
         <Step
           step={1}
-          title="Run dockwatch"
-          description="dockwatch runs as a container and watches every other container on the machine through the Docker socket."
+          title="Run watchdock"
+          description="watchdock runs as a container and watches every other container on the machine through the Docker socket."
         >
           <CodeBlock
-            code={`git clone https://github.com/cobanov/dockwatch.git
-cd dockwatch
+            code={`git clone https://github.com/cobanov/watchdock.git
+cd watchdock
 docker compose up -d --build`}
             language="bash"
             width="100%"
@@ -83,7 +83,7 @@ docker compose up -d --build`}
           <Text type="supporting" color="secondary">
             Install the app, then subscribe to a topic. On the public ntfy.sh anyone who
             knows the topic can read it, so pick something unguessable like
-            dockwatch-x7q2-mertc.
+            watchdock-x7q2-mertc.
           </Text>
           <HStack gap={2}>
             <Link href="https://apps.apple.com/us/app/ntfy/id1625396347" isExternalLink>
@@ -100,8 +100,8 @@ docker compose up -d --build`}
 
         <Step
           step={3}
-          title="Connect dockwatch to ntfy"
-          description="Point dockwatch at the same topic your phone subscribes to."
+          title="Connect watchdock to ntfy"
+          description="Point watchdock at the same topic your phone subscribes to."
         >
           <Text type="supporting" color="secondary">
             Open the Notifications page, enter your topic, hit Save changes, then Send

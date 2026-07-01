@@ -1,16 +1,16 @@
-# dockwatch
+# watchdock
 
 A tiny self-hosted watchdog for your Docker containers. It watches every container on the machine (and remote ones over SSH) and pings your phone the moment something breaks.
 
-**▶ [Live demo](https://dockwatch-demo.pages.dev)** with realistic sample data, no install needed.
+**▶ [Live demo](https://watchdock-demo.pages.dev)** with realistic sample data, no install needed.
 
-![dockwatch dashboard](docs/dashboard.png)
+![watchdock dashboard](docs/dashboard.png)
 
 ## Quick start
 
 ```bash
-git clone https://github.com/cobanov/dockwatch.git
-cd dockwatch
+git clone https://github.com/cobanov/watchdock.git
+cd watchdock
 docker compose up -d --build
 ```
 
@@ -33,7 +33,7 @@ Single static Go binary (~11 MB image), React + [Astryx](https://astryx.atmeta.c
 Add a machine with the **+** next to *Hosts* in the sidebar (or the **Manage hosts** page): its address, SSH user, and optionally a port, alias, key path or password.
 
 - **Auth:** SSH keys / ssh-agent (recommended) or a password (stored in plain text in the config). Keys are read from `~/.ssh`, mounted read-only into the container. The remote user must be able to reach `/var/run/docker.sock` (i.e. in the `docker` group).
-- **Manage:** the toggle next to a host pauses/resumes monitoring. The Hosts page imports/exports hosts as JSON (passwords are never exported), and dockwatch also picks up hosts from your mounted `~/.ssh/config`.
+- **Manage:** the toggle next to a host pauses/resumes monitoring. The Hosts page imports/exports hosts as JSON (passwords are never exported), and watchdock also picks up hosts from your mounted `~/.ssh/config`.
 
 ### Environment variables
 

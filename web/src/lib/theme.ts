@@ -1,6 +1,6 @@
 export type Theme = "light" | "dark"
 
-const STORAGE_KEY = "dockwatch-theme"
+const STORAGE_KEY = "watchdock-theme"
 
 function storedTheme(): Theme {
   const saved = localStorage.getItem(STORAGE_KEY)

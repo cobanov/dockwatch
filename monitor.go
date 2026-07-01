@@ -34,7 +34,7 @@ type containerState struct {
 // handlers: the Docker events stream (primary) and a periodic reconcile poll
 // (safety net for missed events while reconnecting).
 type Monitor struct {
-	host   string // host alias; "local" is the daemon dockwatch runs on
+	host   string // host alias; "local" is the daemon watchdock runs on
 	docker *DockerClient
 	store  *ConfigStore
 	notify *Notifier

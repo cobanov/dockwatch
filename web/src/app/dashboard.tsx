@@ -61,7 +61,7 @@ const groupHeaderCell: React.CSSProperties = {
 }
 const spanCell: React.CSSProperties = { padding: "var(--spacing-3) var(--spacing-4)" }
 
-// dockwatch status semantics → Astryx StatusDot variants (leading row dot +
+// watchdock status semantics → Astryx StatusDot variants (leading row dot +
 // host group headers).
 const DOT_VARIANT: Record<StatusKind, "success" | "warning" | "error" | "neutral"> = {
   ok: "success",
