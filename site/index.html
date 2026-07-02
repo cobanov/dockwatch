@@ -176,10 +176,11 @@ h1{font-size:clamp(2.25rem,5vw,3.5rem);font-weight:600;letter-spacing:-0.025em;l
 .shot{padding:2.5rem 0 0}
 .shot-frame{border:1px solid var(--border-emphasized);border-radius:var(--radius-container);overflow:hidden;box-shadow:var(--shadow-med);background:var(--bg-surface)}
 .shot-frame img{display:block;width:100%;height:auto}
-/* Swap the hero screenshot with the color mode, matching the app's toggle. */
-.shot-dark{display:none}
-.dark .shot-light{display:none}
-.dark .shot-dark{display:block}
+/* Swap the hero screenshot with the color mode, matching the app's toggle.
+   Selectors include .shot-frame so they outrank the `.shot-frame img` rule above. */
+.shot-frame .shot-dark{display:none}
+.dark .shot-frame .shot-light{display:none}
+.dark .shot-frame .shot-dark{display:block}
 
 /* sections */
 section{padding:5rem 0}
