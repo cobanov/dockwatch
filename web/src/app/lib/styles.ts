@@ -7,6 +7,9 @@ import type { CSSProperties } from "react"
 // Standard outer padding for a page's content area.
 export const pagePad: CSSProperties = { padding: "var(--spacing-6)" }
 
+// Tighter padding on phones so narrow content keeps as much width as possible.
+export const pagePadMobile: CSSProperties = { padding: "var(--spacing-3)" }
+
 // Centered, readable max width for form/guide pages.
 export const formMax: CSSProperties = { maxWidth: 760, width: "100%", marginInline: "auto" }
 

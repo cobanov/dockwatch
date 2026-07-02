@@ -49,7 +49,8 @@ import {
   type StatusKind,
 } from "@/lib/api"
 import { isHostLoading, type HostBlock } from "@/app/lib/use-fleet"
-import { pagePad, tableFrame } from "@/app/lib/styles"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { pagePad, pagePadMobile, tableFrame } from "@/app/lib/styles"
 
 // Plain inline styles using Astryx design-token CSS variables. TableCell/stack
 // components expose no padding/background props, so token vars via `style` are
@@ -122,7 +123,12 @@ function matchesStatus(c: Container, filter: StatusFilter): boolean {
   return c.health === "unhealthy"
 }
 
-const columns: TableColumn<Record<string, unknown>>[] = [
+// Desktop spreads every field across its own column. On a phone the fixed
+// columns alone (>600px) overflow the viewport and, with the table frame
+// clipping the overflow, squeeze the proportional name column to nothing — so
+// mobile collapses to three columns (dot · stacked details · actions) and packs
+// status/image/ports/uptime/host into the details cell instead.
+const DESKTOP_COLUMNS: TableColumn<Record<string, unknown>>[] = [
   { key: "status", header: "", width: pixel(40) },
   { key: "name", header: "Container", width: proportional(1) },
   { key: "state", header: "Status", width: pixel(120) },
@@ -130,6 +136,12 @@ const columns: TableColumn<Record<string, unknown>>[] = [
   { key: "uptime", header: "Uptime", width: pixel(140) },
   { key: "host", header: "Host", width: pixel(96) },
   { key: "actions", header: "", width: pixel(48) },
+]
+
+const MOBILE_COLUMNS: TableColumn<Record<string, unknown>>[] = [
+  { key: "status", header: "", width: pixel(32) },
+  { key: "name", header: "Container", width: proportional(1) },
+  { key: "actions", header: "", width: pixel(44) },
 ]
 
 interface Group {
@@ -243,9 +255,11 @@ function PortsCell({ ports }: { ports: string[] }) {
 function ContainerRow({
   container,
   onSelect,
+  isMobile,
 }: {
   container: Container
   onSelect: () => void
+  isMobile: boolean
 }) {
   const s = uiStatus(container)
   return (
@@ -269,38 +283,67 @@ function ContainerRow({
           />
         </Center>
       </TableCell>
-      <TableCell>
-        <HStack gap={3} vAlign="center">
-          <Text type="code" size="sm" color="secondary">
-            {container.id.slice(0, 12)}
-          </Text>
-          <Text type="body" weight="semibold" maxLines={1}>
-            {container.name}
-          </Text>
-          <Tooltip content={container.image} hasHoverIndication={false}>
+      {isMobile ? (
+        <TableCell>
+          <VStack gap={1}>
+            <HStack gap={2} vAlign="center">
+              <StackItem size="fill">
+                <Text type="body" weight="semibold" maxLines={1}>
+                  {container.name}
+                </Text>
+              </StackItem>
+              <StatusBadge kind={s.kind} label={s.label} />
+              {container.ignored && <Badge variant="neutral" label="Ignored" />}
+            </HStack>
             <Text type="supporting" color="secondary" maxLines={1}>
-              › {shortImage(container.image)}
+              {shortImage(container.image)}
             </Text>
-          </Tooltip>
-          {container.ignored && <Badge variant="neutral" label="Ignored" />}
-        </HStack>
-      </TableCell>
-      <TableCell>
-        <StatusBadge kind={s.kind} label={s.label} />
-      </TableCell>
-      <TableCell>
-        <PortsCell ports={container.ports} />
-      </TableCell>
-      <TableCell>
-        <Text type="supporting" color="secondary" maxLines={1}>
-          {container.status}
-        </Text>
-      </TableCell>
-      <TableCell>
-        <Text type="supporting" color="secondary" maxLines={1}>
-          {container.host}
-        </Text>
-      </TableCell>
+            {container.ports && container.ports.length > 0 && (
+              <Text type="code" size="sm" color="secondary" maxLines={1}>
+                {container.ports.join("  ")}
+              </Text>
+            )}
+            <Text type="supporting" color="secondary" maxLines={1}>
+              {container.status} · {container.host}
+            </Text>
+          </VStack>
+        </TableCell>
+      ) : (
+        <>
+          <TableCell>
+            <HStack gap={3} vAlign="center">
+              <Text type="code" size="sm" color="secondary">
+                {container.id.slice(0, 12)}
+              </Text>
+              <Text type="body" weight="semibold" maxLines={1}>
+                {container.name}
+              </Text>
+              <Tooltip content={container.image} hasHoverIndication={false}>
+                <Text type="supporting" color="secondary" maxLines={1}>
+                  › {shortImage(container.image)}
+                </Text>
+              </Tooltip>
+              {container.ignored && <Badge variant="neutral" label="Ignored" />}
+            </HStack>
+          </TableCell>
+          <TableCell>
+            <StatusBadge kind={s.kind} label={s.label} />
+          </TableCell>
+          <TableCell>
+            <PortsCell ports={container.ports} />
+          </TableCell>
+          <TableCell>
+            <Text type="supporting" color="secondary" maxLines={1}>
+              {container.status}
+            </Text>
+          </TableCell>
+          <TableCell>
+            <Text type="supporting" color="secondary" maxLines={1}>
+              {container.host}
+            </Text>
+          </TableCell>
+        </>
+      )}
       <TableCell>
         <HStack hAlign="end" onClick={(e: React.MouseEvent) => e.stopPropagation()}>
           <MoreMenu
@@ -343,6 +386,7 @@ export function DashboardContent({
   onSelectContainer: (container: Container) => void
   hostFilter?: string | null
 }) {
+  const isMobile = useIsMobile()
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all")
   const query = search.trim().toLowerCase()
@@ -387,6 +431,7 @@ export function DashboardContent({
   }, [shownBlocks])
 
   const hostCount = shownBlocks.length
+  const columns = isMobile ? MOBILE_COLUMNS : DESKTOP_COLUMNS
   const COL_COUNT = columns.length
   const resolvedWidths = resolveColumnWidths(columns)
 
@@ -396,7 +441,7 @@ export function DashboardContent({
 
   return (
     <LayoutContent role="main">
-      <VStack gap={6} style={pagePad}>
+      <VStack gap={6} style={isMobile ? pagePadMobile : pagePad}>
         <VStack gap={4}>
           <VStack gap={0}>
             <Heading level={1}>{hostFilter ?? "Dashboard"}</Heading>
@@ -407,7 +452,7 @@ export function DashboardContent({
             </Text>
           </VStack>
 
-          <Grid columns={{ minWidth: 180 }} gap={3}>
+          <Grid columns={{ minWidth: isMobile ? 140 : 180 }} gap={3}>
             {STAT_CARDS.map((card) => (
               <StatCard
                 key={card.key}
@@ -420,8 +465,8 @@ export function DashboardContent({
             ))}
           </Grid>
 
-          <HStack gap={2} vAlign="center">
-            <StackItem size="fill">
+          {(() => {
+            const filterInput = (
               <TextInput
                 label="Filter containers"
                 isLabelHidden
@@ -431,17 +476,33 @@ export function DashboardContent({
                 onChange={setSearch}
                 hasClear
               />
-            </StackItem>
-            <SegmentedControl
-              label="Group by"
-              value={groupBy}
-              onChange={(v) => onGroupByChange(v as GroupByField)}
-            >
-              {GROUP_BY_OPTIONS.map((opt) => (
-                <SegmentedControlItem key={opt.value} value={opt.value} label={opt.label} />
-              ))}
-            </SegmentedControl>
-          </HStack>
+            )
+            const groupControl = (
+              <SegmentedControl
+                label="Group by"
+                value={groupBy}
+                onChange={(v) => onGroupByChange(v as GroupByField)}
+                layout={isMobile ? "fill" : "hug"}
+              >
+                {GROUP_BY_OPTIONS.map((opt) => (
+                  <SegmentedControlItem key={opt.value} value={opt.value} label={opt.label} />
+                ))}
+              </SegmentedControl>
+            )
+            // Side by side has room on desktop; on a phone the 4-segment control
+            // won't fit next to the input, so stack them full-width.
+            return isMobile ? (
+              <VStack gap={2}>
+                {filterInput}
+                {groupControl}
+              </VStack>
+            ) : (
+              <HStack gap={2} vAlign="center">
+                <StackItem size="fill">{filterInput}</StackItem>
+                {groupControl}
+              </HStack>
+            )
+          })()}
 
           {configError && (
             <Banner
@@ -554,6 +615,7 @@ export function DashboardContent({
                       key={c.id}
                       container={c}
                       onSelect={() => onSelectContainer(c)}
+                      isMobile={isMobile}
                     />
                   ))}
               </React.Fragment>
